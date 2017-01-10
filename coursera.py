@@ -45,9 +45,8 @@ def get_courses_list(number_of_courses=20):
     url = 'https://www.coursera.org/sitemap~www~courses.xml'
     courses_xml = requests.get(url).content
     tree = etree.fromstring(courses_xml)
-    courses_total = len(tree)
-    course_numbers = random.sample(range(courses_total), number_of_courses)
-    return [tree[number][0].text for number in course_numbers]
+    random_curses = random.sample(list(tree), number_of_courses)
+    return [course[0].text for course in random_curses]
 
 
 def output_courses_info_to_xlsx(filepath, courses_info):
