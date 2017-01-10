@@ -25,7 +25,7 @@ def get_course_start(soup):
 
 def get_course_duration(soup):
     duration = len(soup.find_all("div", "week"))
-    return duration if duration > 0 else "Нет данных"
+    return duration if duration > 0 else None
 
 
 def get_course_rate(soup):
