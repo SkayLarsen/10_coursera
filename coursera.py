@@ -20,7 +20,7 @@ def get_course_start(soup):
         json_data = soup.select('script[type="application/ld+json"]')[0].text
         return json.loads(json_data)['hasCourseInstance'][0]['startDate']
     except (KeyError, IndexError):
-        return "Нет данных"
+        return None
 
 
 def get_course_duration(soup):
@@ -32,7 +32,7 @@ def get_course_rate(soup):
     try:
         return soup.find('div', "ratings-text").text
     except AttributeError:
-        return "Нет данных"
+        return None
 
 def get_course_info(course_url):
     course_page = requests.get(course_url).content.decode("utf-8", "ignore")
@@ -56,7 +56,9 @@ def output_courses_info_to_xlsx(filepath, courses_info):
     sheet.title = "Курсы"
     sheet.append(['Название', 'Язык', 'Дата начала', 'Количество недель', 'Средняя оценка'])
     for course in courses_info:
-        sheet.append(course)
+        sheet.append([info if info is not None
+                      else "Нет данных"
+                      for info in course])
     book.save(filepath)
 
 
