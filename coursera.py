@@ -34,6 +34,7 @@ def get_course_rate(soup):
     except AttributeError:
         return None
 
+
 def get_course_info(course_url):
     course_page = requests.get(course_url).content.decode("utf-8", "ignore")
     soup = BeautifulSoup(course_page, "html.parser")
@@ -49,7 +50,7 @@ def get_courses_list(number_of_courses=20):
     return [course[0].text for course in random_curses]
 
 
-def output_courses_info_to_xlsx(filepath, courses_info):
+def make_courses_workbook(courses_info):
     book = Workbook()
     sheet = book.active
     sheet.title = "Курсы"
@@ -58,7 +59,7 @@ def output_courses_info_to_xlsx(filepath, courses_info):
         sheet.append([info if info is not None
                       else "Нет данных"
                       for info in course])
-    book.save(filepath)
+    return book
 
 
 if __name__ == '__main__':
@@ -66,4 +67,5 @@ if __name__ == '__main__':
     parser.add_argument('filepath', help='путь к xlsx-файлу')
     args = parser.parse_args()
     courses = [get_course_info(url) for url in get_courses_list()]
-    output_courses_info_to_xlsx(args.filepath, courses)
+    courses_workbook = make_courses_workbook(courses)
+    courses_workbook.save(args.filepath)
